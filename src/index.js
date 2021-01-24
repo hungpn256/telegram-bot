@@ -21,6 +21,12 @@ app.get("/", function (req, res) {
   let reply = "Welcome to telegram bot";
   sendMessage(telegram_url, message, reply, res);
 });
+app.post("/", function (req, res) {
+  const { message } = req.body;
+  console.log("ss");
+  let reply = "Welcome to telegram bot post";
+  sendMessage(telegram_url, message, reply, res);
+});
 function sendMessage(url, message, reply, res) {
   axios
     .post(url, { chat_id: "1049284339", text: reply })
