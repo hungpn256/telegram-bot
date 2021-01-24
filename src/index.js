@@ -23,7 +23,7 @@ app.get("/", function (req, res) {
 });
 function sendMessage(url, message, reply, res) {
   axios
-    .post(url, { chat_id: "1527516281", text: reply })
+    .post(url, { chat_id: "1049284339", text: reply })
     .then((response) => {
       console.log("Message posted");
       res.end("ok");
