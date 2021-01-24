@@ -1,5 +1,7 @@
 var express = require("express");
 var app = express();
+
+const PORT = process.env.PORT || 3000;
 var bodyParser = require("body-parser");
 require("dotenv").config();
 const axios = require("axios");
@@ -30,4 +32,4 @@ function sendMessage(url, message, reply, res) {
       console.log(error);
     });
 }
-app.listen(3000, () => console.log("Telegram bot is listening on port 3000!"));
+app.listen(PORT, () => console.log("Telegram bot is listening on port 3000!"));
