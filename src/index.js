@@ -22,7 +22,7 @@ app.post("/", function (req, res) {
 });
 function sendMessage(url, message, reply, res) {
   axios
-    .post(url, { chat_id: message.chat.id, text: message.text })
+    .post(url, { chat_id: message.chat.id, text: message.text + "sdasd" })
     .then((response) => {
       console.log("Message posted");
       res.end("ok");
