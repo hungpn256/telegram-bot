@@ -17,12 +17,18 @@ let telegram_url =
   "/sendMessage";
 app.post("/", function (req, res) {
   const { message } = req.body;
-  let reply = "Welcome to telegram bot post";
-  sendMessage(telegram_url, message, reply, res);
+  const { text } = message;
+  if (text.matchs("^/lichhoc1$")) {
+    let reply = "replichhoc";
+    sendMessage(telegram_url, message, reply, res);
+  } else {
+    let reply = "gọi gì???";
+    sendMessage(telegram_url, message, reply, res);
+  }
 });
 function sendMessage(url, message, reply, res) {
   axios
-    .post(url, { chat_id: message.chat.id, text: message.text + "sdasd" })
+    .post(url, { chat_id: message.chat.id, text: reply })
     .then((response) => {
       console.log("Message posted");
       res.end("ok");
