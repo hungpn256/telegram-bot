@@ -18,7 +18,7 @@ let telegram_url =
 app.post("/", function (req, res) {
   const { message } = req.body;
   const { text } = message;
-  if (text.matchs("^/lichhoc1$")) {
+  if (text.match("^/lichhoc1$")) {
     let reply = "replichhoc";
     sendMessage(telegram_url, message, reply, res);
   } else {
