@@ -14,7 +14,7 @@ module.exports.autoRepMessage = (req, res) => {
   // const { message } = req.body;
   // const { text } = message;
   // let reply;
-  // const url = telegram_url + "/sendMessage";
+  const url = telegram_url + "/sendMessage";
   // if (text.match("/poll.*")) {
   //   if (text.indexOf("q:") !== -1 && text.indexOf("a:") !== -1) {
   //     const question = text.slice(text.indexOf("q:") + 2, text.indexOf("a:"));
