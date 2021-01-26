@@ -12,6 +12,7 @@ module.exports.getUpdates = (req, res) => {
 module.exports.autoRepMessage = (req, res) => {
   const { message } = req.body;
   const { text } = message;
+  console.log(req.body);
   let reply;
   const url = telegram_url + "/sendMessage";
   if (text.match("/poll.*")) {
@@ -34,7 +35,6 @@ module.exports.autoRepMessage = (req, res) => {
     reply = checkMessage(text);
   }
   res.send(req.body);
-  console.log(req.body);
 };
 function sendPoll(url, user_id, question, answer) {
   axios
