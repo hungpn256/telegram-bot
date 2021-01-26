@@ -15,10 +15,12 @@ module.exports.autoRepMessage = (req, res) => {
   let reply;
   const url = telegram_url + "/sendMessage";
   if (text.match("/poll.*")) {
-    const question = text.slice(text.indexOf("q:") + 2, text.indexOf("a:"));
-    let answers = text.slice(text.indexOf("a:") + 2);
-    answers = answers.split(",");
-    if (question.length > 0 && answers.length > 0) {
+    if (text.indexOf("q:") !== -1 && text.indexOf("a:") !== -1) {
+      const question = text.slice(text.indexOf("q:") + 2, text.indexOf("a:"));
+      let answers = text.slice(text.indexOf("a:") + 2);
+      answers = answers.split(",");
+      console.log("question: ", question);
+      console.log("answers: ", answers);
       sendPoll(telegram_url, message.chat.id, question, answers);
       reply = "Create poll successfully!!!!";
       sendMessage(url, message.chat.id, reply);
@@ -31,8 +33,6 @@ module.exports.autoRepMessage = (req, res) => {
   } else {
     reply = checkMessage(text);
   }
-
-  console.log(telegram_url);
   res.send(req.body);
   console.log(req.body);
 };
