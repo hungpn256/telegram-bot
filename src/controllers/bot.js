@@ -12,7 +12,14 @@ module.exports.getUpdates = (req,res) =>{
 module.exports.autoRepMessage = (req,res)=>{
     const { message } = req.body;
     const { text } = message;
-    const reply = checkMessage(text);
+    let reply;
+    if(text.match("/poll")){
+      sendPoll(telegram_url,message.from.id,"How are you?", ["OK","Fine","Bad"]);
+      reply = 'Create poll successfully!!!!'
+    }
+    else {
+      reply = checkMessage(text);
+    }
     const url = telegram_url + "/sendMessage";
     sendMessage(url, message.from.id, reply);
     console.log(telegram_url);
@@ -51,10 +58,7 @@ function checkMessage(text) {
     const date = new Date()
     reply = ` ${date.getHours()} : ${(date.getMinutes()< 10? '0'+date.getMinutes(): date.getMinutes())} : ${(date.getSeconds()< 10? '0'+date.getSeconds(): date.getSeconds())}`
   }
-  else if(text.match("/poll")){
-    sendPoll(telegram_url,"1527516281","How are you?", ["OK","Fine","Bad"]);
-    reply = 'Create poll successfully!!!!'
-  }
+  
   else {
     reply = "gọi gì???";
   }
