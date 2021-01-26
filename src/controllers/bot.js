@@ -34,6 +34,7 @@ module.exports.autoRepMessage = (req, res) => {
 
   console.log(telegram_url);
   res.send(req.body);
+  console.log(req.body);
 };
 function sendPoll(url, user_id, question, answer) {
   axios
