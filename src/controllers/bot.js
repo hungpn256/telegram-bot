@@ -18,7 +18,7 @@ module.exports.autoRepMessage = (req, res) => {
     const question = text.slice(text.indexOf("q:") + 2, text.indexOf("a:"));
     let answers = text.slice(text.indexOf("a:") + 2);
     answers = answers.split(",");
-    if (question && answers) {
+    if (question.length > 0 && answers.length > 0) {
       sendPoll(telegram_url, message.chat.id, question, answers);
       reply = "Create poll successfully!!!!";
       sendMessage(url, message.chat.id, reply);
@@ -33,7 +33,7 @@ module.exports.autoRepMessage = (req, res) => {
   }
 
   console.log(telegram_url);
-  res.send("hello");
+  res.send(req.body);
 };
 function sendPoll(url, user_id, question, answer) {
   axios
