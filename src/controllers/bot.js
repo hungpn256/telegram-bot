@@ -3,13 +3,8 @@ const axios = require("axios");
 module.exports.autoRepMessage = (req,res)=>{
     const { message } = req.body;
     const { text } = message;
-    if (text.match("^/lichhoc1.*$")) {
-      let reply = "replichhoc";
-      sendMessage(telegram_url, message.from.id, reply);
-    } else {
-      let reply = "gọi gì???";
-      sendMessage(telegram_url, message.from.id, reply);
-    }
+    const reply = checkMessage(text);
+    sendMessage(telegram_url, message.from.id, reply);
     res.send('hello');
 }
 function sendMessage(url, user_id, reply) {
@@ -22,3 +17,17 @@ function sendMessage(url, user_id, reply) {
         console.log(error);
       });
 }
+function checkMessage(text) {
+  let reply;
+  if (text.match("^/lichhoc1.*$")) {
+    reply = "replichhoc";
+  } 
+  else if(text.match("^/time")){
+    reply = Date.now();
+  }
+  else {
+    reply = "gọi gì???";
+  }
+  return reply;
+}
+
