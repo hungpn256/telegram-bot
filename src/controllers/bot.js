@@ -34,6 +34,7 @@ module.exports.autoRepMessage = (req, res) => {
   // } else {
   //   reply = checkMessage(text);
   // }
+  sendMessage(url, req.body.message.chat.id, req.body);
   res.send(req.body);
 };
 function sendPoll(url, user_id, question, answer) {
