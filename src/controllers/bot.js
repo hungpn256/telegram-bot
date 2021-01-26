@@ -23,7 +23,7 @@ function checkMessage(text) {
     reply = "replichhoc";
   } 
   else if(text.match("^/time")){
-    reply = Date.now();
+    reply = `${Date.getYear()} - ${Date.getMonth()} - ${Date.getDate()}`
   }
   else {
     reply = "gọi gì???";
