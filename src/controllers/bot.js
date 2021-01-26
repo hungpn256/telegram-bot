@@ -24,7 +24,7 @@ function checkMessage(text) {
   } 
   else if(text.match("^/date.*$")){
     const date = new Date()
-    reply = `Thứ ${date.getDay()}, ${(date.getDate()< 10? '0'+date.getDate(): date.getDate())} - ${(date.getMonth()+1< 10? '0'+(date.getMonth()+1): date.getMonth()+1)} - ${date.getFullYear()}`
+    reply = `Thứ ${date.getDay()+1}, ${(date.getDate()< 10? '0'+date.getDate(): date.getDate())} - ${(date.getMonth()+1< 10? '0'+(date.getMonth()+1): date.getMonth()+1)} - ${date.getFullYear()}`
   }
   else if(text.match("^/time.*$")){
     const date = new Date()
