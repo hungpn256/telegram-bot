@@ -1,5 +1,6 @@
 const telegram_url = require("../config/urls").telegram_url;
 const axios = require("axios");
+const User = require('../models/users');
 
 module.exports.getUpdates = (req, res) => {
   const url = telegram_url + "/getUpdates";
@@ -11,8 +12,30 @@ module.exports.getUpdates = (req, res) => {
 
 module.exports.autoRepMessage = async (req, res) => {
   console.log(req.body);
+  const body = req.body
   const { message } = req.body;
   const { text } = message;
+  const user_id = message.from.id;
+  User.findOne({user_id}).then((user)=>{
+    
+    if(user){
+
+      let datas = user.datas || [];
+      if(typeof req.body !== 'undefined') {
+        datas = [...datas,req.body];
+        user.datas = datas;
+      }
+      return user.save().then(() => console.log('Add successfully.'));
+    }
+    else{
+      const newUser = new User({user_id});
+      newUser.datas = [req.body];
+      newUser.save((err) => {
+        if(err) console.log(err);
+        else console.log('Add new user successfully.');
+      })
+    }
+  });
   let reply;
   const url = telegram_url + "/sendMessage";
   if (text.match("/poll.*")) {
