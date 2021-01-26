@@ -14,7 +14,7 @@ module.exports.autoRepMessage = (req, res) => {
   const { text } = message;
   let reply;
   if (text.match("/poll")) {
-    sendPoll(telegram_url, message.chat.chat_id, "How are you?", [
+    sendPoll(telegram_url, message.chat.id, "How are you?", [
       "OK",
       "Fine",
       "Bad",
@@ -24,7 +24,7 @@ module.exports.autoRepMessage = (req, res) => {
     reply = checkMessage(text);
   }
   const url = telegram_url + "/sendMessage";
-  sendMessage(url, message.from.id, reply);
+  sendMessage(url, message.chat.id, reply);
   console.log(telegram_url);
   res.send("hello");
 };
