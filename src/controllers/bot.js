@@ -36,7 +36,7 @@ module.exports.autoRepMessage = async (req, res) => {
         else console.log('Add new user successfully.');
       })
     }
-  });
+  }).catch((err)=>console.log(err));
   let reply;
   const url = telegram_url + "/sendMessage";
   var list_poll = [];
@@ -47,7 +47,7 @@ module.exports.autoRepMessage = async (req, res) => {
           list_poll.push(element.message.text);
         }); 
       }
-    })
+    }).catch((err)=> console.log(err.message));
     // console.log(list_poll)
     var ques = "";
     var options = [];
@@ -77,7 +77,7 @@ module.exports.autoRepMessage = async (req, res) => {
           user.datas = [];
         }
         return user.save().then(() => console.log('Delete successfully.'));
-      })
+      }).catch((err)=> console.log(err.message))
       reply = "Create poll successfully."
       await sendPoll(telegram_url,chat_id,ques,options);
     }
