@@ -42,9 +42,11 @@ module.exports.autoRepMessage = async (req, res) => {
   var list_poll = [];
   if (text.match("^/done.*$")) {
     await User.findOne({user_id}).then((user)=>{
-      user.datas.forEach(element => {
-        list_poll.push(element.message.text);
-      }); 
+      if(user){
+        user.datas.forEach(element => {
+          list_poll.push(element.message.text);
+        }); 
+      }
     })
     // console.log(list_poll)
     var ques = "";
@@ -69,14 +71,24 @@ module.exports.autoRepMessage = async (req, res) => {
         options.push(list_poll[i].slice(8));
       }
     }
-    
-    console.log(ques,options)
-    sendPoll(telegram_url,chat_id,ques,options);
+    if (options.length >= 2){
+      await User.findOne({user_id}).then((user)=>{
+        if(user){
+          user.datas = [];
+        }
+        return user.save().then(() => console.log('Delete successfully.'));
+      })
+      reply = "Create poll successfully."
+      await sendPoll(telegram_url,chat_id,ques,options);
+    }
+    else{
+      reply = "Add option with /option ... or create poll with /done.\n Your options need at least 2."
+    }
     
   } else {
     reply = checkMessage(text);
-    sendMessage(url,chat_id,reply);
   }
+  sendMessage(url,chat_id,reply);
   // sendMessage(url, req.body.message.chat.id, req.body);
   res.send(req.body);
 };
