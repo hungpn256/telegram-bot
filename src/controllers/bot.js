@@ -16,6 +16,7 @@ module.exports.autoRepMessage = async (req, res) => {
   const { message } = req.body;
   const { text } = message;
   const user_id = message.from.id;
+  const chat_id = message.chat.id;
   User.findOne({user_id}).then((user)=>{
     
     if(user){
@@ -38,34 +39,51 @@ module.exports.autoRepMessage = async (req, res) => {
   });
   let reply;
   const url = telegram_url + "/sendMessage";
-  if (text.match("/poll.*")) {
-    if (text.indexOf("q:") !== -1 && text.indexOf("a:") !== -1) {
-      const question = text.slice(text.indexOf("q:") + 2, text.indexOf("a:"));
-      let answers = text.slice(text.indexOf("a:") + 2);
-      answers = answers.split(",");
-      console.log("question: ", question);
-      console.log("answers: ", answers);
-      await sendPoll(telegram_url, message.chat.id, question, answers);
-      reply = "Create poll successfully!!!!";
-      sendMessage(url, message.chat.id, reply);
-    } else
-      sendMessage(
-        url,
-        message.chat.id,
-        "vui lòng đúng format /poll q:... a:option1,option2,..."
-      );
+  var list_poll = [];
+  if (text.match("^/done.*$")) {
+    await User.findOne({user_id}).then((user)=>{
+      user.datas.forEach(element => {
+        list_poll.push(element.message.text);
+      });
+      
+    })
+    // console.log(list_poll)
+    var ques = "";
+    var options = [];
+    var si=0,di=0;
+    for(var index in list_poll){
+      
+      if(list_poll[index].match("^/poll.*$")){
+        si = parseInt(index);
+      }
+      if(list_poll[index].match("^/done.*$")){
+        di = parseInt(index);
+      }
+    }
+    console.log(si,di);
+    for(var i = si +1;i < di; i++){
+      if(list_poll[i].match("^/ques.*$")){
+        ques = list_poll[i].slice(6);
+      }
+      if(list_poll[i].match("^/option.*$")){
+        options.push(list_poll[i].slice(8));
+      }
+    }
+    sendPoll(telegram_url,chat_id,ques,options);
+    
   } else {
     reply = checkMessage(text);
+    sendMessage(url,chat_id,reply);
   }
-  sendMessage(url, req.body.message.chat.id, req.body);
+  // sendMessage(url, req.body.message.chat.id, req.body);
   res.send(req.body);
 };
-function sendPoll(url, user_id, question, answer) {
+function sendPoll(url, user_id, question, options) {
   axios
     .post(url + "/sendPoll", {
       chat_id: user_id,
       question: question,
-      options: answer,
+      options: options,
     })
     .then((response) => {
       console.log("Poll posted");
@@ -104,7 +122,16 @@ function checkMessage(text) {
     } : ${
       date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds()
     }`;
-  } else {
+  } else if(text.match("^/poll.*$")){
+    reply = "Enter your question.\nStart with /ques ...."
+  } 
+  else if(text.match("^/ques.*$")){
+    reply = "Enter your options.\nStart with /option ...."
+  }
+  else if (text.match("^/option.*$")){
+    reply = "Add option with /option ... or create poll with /done."
+  }
+  else {
     reply = "gọi gì???";
   }
   return reply;
