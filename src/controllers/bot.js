@@ -44,8 +44,7 @@ module.exports.autoRepMessage = async (req, res) => {
     await User.findOne({user_id}).then((user)=>{
       user.datas.forEach(element => {
         list_poll.push(element.message.text);
-      });
-      
+      }); 
     })
     // console.log(list_poll)
     var ques = "";
@@ -56,12 +55,13 @@ module.exports.autoRepMessage = async (req, res) => {
       if(list_poll[index].match("^/poll.*$")){
         si = parseInt(index);
       }
-      if(list_poll[index].match("^/done.*$")){
+      if(list_poll[index].match("^/option.*$")){
         di = parseInt(index);
+        console.log(di,index);
       }
     }
     console.log(si,di);
-    for(var i = si +1;i < di; i++){
+    for(var i = si;i <= di; i++){
       if(list_poll[i].match("^/ques.*$")){
         ques = list_poll[i].slice(6);
       }
@@ -69,6 +69,8 @@ module.exports.autoRepMessage = async (req, res) => {
         options.push(list_poll[i].slice(8));
       }
     }
+    
+    console.log(ques,options)
     sendPoll(telegram_url,chat_id,ques,options);
     
   } else {
