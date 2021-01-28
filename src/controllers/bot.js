@@ -10,7 +10,7 @@ module.exports.getUpdates = (req, res) => {
   });
 };
 
-module.exports.autoRepMessage = async (req, res) => {
+module.exports.autoRepMessage = (req, res) => {
   const body = req.body;
   const { message } = req.body;
   const { text } = message;
