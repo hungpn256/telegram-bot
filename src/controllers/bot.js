@@ -16,84 +16,85 @@ module.exports.autoRepMessage = async (req, res) => {
   const { text } = message;
   const user_id = message.from.id;
   const chat_id = message.chat.id;
-  try {
-    User.findOne({ user_id })
-      .then((user) => {
-        if (user) {
-          let datas = user.datas || [];
-          if (typeof req.body !== "undefined") {
-            datas = [...datas, req.body];
-            user.datas = datas;
-          }
-          return user.save().then(() => console.log("Add successfully."));
-        } else {
-          const newUser = new User({ user_id });
-          newUser.datas = [req.body];
-          newUser.save((err) => {
-            if (err) console.log(err);
-            else console.log("Add new user successfully.");
-          });
-        }
-      })
-      .catch((err) => console.log(err));
-    let reply;
-    const url = telegram_url + "/sendMessage";
-    var list_poll = [];
-    if (text.match("^/done.*$")) {
-      await User.findOne({ user_id })
-        .then((user) => {
-          if (user) {
-            user.datas.forEach((element) => {
-              list_poll.push(element.message.text);
-            });
-          }
-        })
-        .catch((err) => console.log(err.message));
-      var ques = "";
-      var options = [];
-      var si = 0,
-        di = 0;
-      for (var index in list_poll) {
-        if (list_poll[index].match("^/poll.*$")) {
-          si = parseInt(index);
-        }
-        if (list_poll[index].match("^/option.*$")) {
-          di = parseInt(index);
-          console.log(di, index);
-        }
-      }
-      for (var i = si; i <= di; i++) {
-        if (list_poll[i].match("^/ques.*$")) {
-          ques = list_poll[i].slice(6);
-        }
-        if (list_poll[i].match("^/option.*$")) {
-          options.push(list_poll[i].slice(8));
-        }
-      }
-      if (options.length >= 2) {
-        await User.findOne({ user_id })
-          .then((user) => {
-            if (user) {
-              user.datas = [];
-            }
-            return user.save().then(() => console.log("Delete successfully."));
-          })
-          .catch((err) => console.log(err.message));
-        reply = "Create poll successfully.";
-        await sendPoll(telegram_url, chat_id, ques, options);
-      } else {
-        reply =
-          "Add option with /option ... or create poll with /done.\n Your options need at least 2.";
-      }
-    } else {
-      reply = checkMessage(message);
-    }
-    sendMessage(url, chat_id, reply);
-    // sendMessage(url, req.body.message.chat.id, req.body);
-    res.send(req.body);
-  } catch (e) {
-    console.log(e);
-  }
+  // try {
+  //   User.findOne({ user_id })
+  //     .then((user) => {
+  //       if (user) {
+  //         let datas = user.datas || [];
+  //         if (typeof req.body !== "undefined") {
+  //           datas = [...datas, req.body];
+  //           user.datas = datas;
+  //         }
+  //         return user.save().then(() => console.log("Add successfully."));
+  //       } else {
+  //         const newUser = new User({ user_id });
+  //         newUser.datas = [req.body];
+  //         newUser.save((err) => {
+  //           if (err) console.log(err);
+  //           else console.log("Add new user successfully.");
+  //         });
+  //       }
+  //     })
+  //     .catch((err) => console.log(err));
+  //   let reply;
+  //   const url = telegram_url + "/sendMessage";
+  //   var list_poll = [];
+  //   if (text.match("^/done.*$")) {
+  //     await User.findOne({ user_id })
+  //       .then((user) => {
+  //         if (user) {
+  //           user.datas.forEach((element) => {
+  //             list_poll.push(element.message.text);
+  //           });
+  //         }
+  //       })
+  //       .catch((err) => console.log(err.message));
+  //     var ques = "";
+  //     var options = [];
+  //     var si = 0,
+  //       di = 0;
+  //     for (var index in list_poll) {
+  //       if (list_poll[index].match("^/poll.*$")) {
+  //         si = parseInt(index);
+  //       }
+  //       if (list_poll[index].match("^/option.*$")) {
+  //         di = parseInt(index);
+  //         console.log(di, index);
+  //       }
+  //     }
+  //     for (var i = si; i <= di; i++) {
+  //       if (list_poll[i].match("^/ques.*$")) {
+  //         ques = list_poll[i].slice(6);
+  //       }
+  //       if (list_poll[i].match("^/option.*$")) {
+  //         options.push(list_poll[i].slice(8));
+  //       }
+  //     }
+  //     if (options.length >= 2) {
+  //       await User.findOne({ user_id })
+  //         .then((user) => {
+  //           if (user) {
+  //             user.datas = [];
+  //           }
+  //           return user.save().then(() => console.log("Delete successfully."));
+  //         })
+  //         .catch((err) => console.log(err.message));
+  //       reply = "Create poll successfully.";
+  //       await sendPoll(telegram_url, chat_id, ques, options);
+  //     } else {
+  //       reply =
+  //         "Add option with /option ... or create poll with /done.\n Your options need at least 2.";
+  //     }
+  //   } else {
+  //     reply = checkMessage(message);
+  //   }
+  //   sendMessage(url, chat_id, reply);
+  //   // sendMessage(url, req.body.message.chat.id, req.body);
+  //   res.send(req.body);
+  // } catch (e) {
+  //   console.log(e);
+  // }
+  checkMessage(message);
 };
 function sendPoll(url, user_id, question, options) {
   axios
