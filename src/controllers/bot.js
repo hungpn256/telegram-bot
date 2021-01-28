@@ -11,11 +11,11 @@ module.exports.getUpdates = (req, res) => {
 };
 
 module.exports.autoRepMessage = async (req, res) => {
-  // const body = req.body;
-  // const { message } = req.body;
-  // const { text } = message;
-  // const user_id = message.from.id;
-  // const chat_id = message.chat.id;
+  const body = req.body;
+  const { message } = req.body;
+  const { text } = message;
+  const user_id = message.from.id;
+  const chat_id = message.chat.id;
   // User.findOne({ user_id })
   //   .then((user) => {
   //     if (user) {
