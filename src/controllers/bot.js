@@ -11,7 +11,6 @@ module.exports.getUpdates = (req, res) => {
 };
 
 module.exports.autoRepMessage = async (req, res) => {
-  console.log(req.body);
   const body = req.body;
   const { message } = req.body;
   const { text } = message;
@@ -49,7 +48,6 @@ module.exports.autoRepMessage = async (req, res) => {
         }
       })
       .catch((err) => console.log(err.message));
-    // console.log(list_poll)
     var ques = "";
     var options = [];
     var si = 0,
@@ -63,7 +61,6 @@ module.exports.autoRepMessage = async (req, res) => {
         console.log(di, index);
       }
     }
-    console.log(si, di);
     for (var i = si; i <= di; i++) {
       if (list_poll[i].match("^/ques.*$")) {
         ques = list_poll[i].slice(6);
