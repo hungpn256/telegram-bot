@@ -36,7 +36,7 @@ module.exports.autoRepMessage = (req, res) => {
   //   })
   //   .catch((err) => console.log(err));
   // let reply;
-  // const url = telegram_url + "/sendMessage";
+  const url = telegram_url + "/sendMessage";
   // var list_poll = [];
   // if (text.match("^/done.*$")) {
   //   await User.findOne({ user_id })
