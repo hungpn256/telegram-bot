@@ -16,80 +16,84 @@ module.exports.autoRepMessage = async (req, res) => {
   const { text } = message;
   const user_id = message.from.id;
   const chat_id = message.chat.id;
-  User.findOne({ user_id })
-    .then((user) => {
-      if (user) {
-        let datas = user.datas || [];
-        if (typeof req.body !== "undefined") {
-          datas = [...datas, req.body];
-          user.datas = datas;
-        }
-        return user.save().then(() => console.log("Add successfully."));
-      } else {
-        const newUser = new User({ user_id });
-        newUser.datas = [req.body];
-        newUser.save((err) => {
-          if (err) console.log(err);
-          else console.log("Add new user successfully.");
-        });
-      }
-    })
-    .catch((err) => console.log(err));
-  let reply;
-  const url = telegram_url + "/sendMessage";
-  var list_poll = [];
-  if (text.match("^/done.*$")) {
-    await User.findOne({ user_id })
+  try {
+    User.findOne({ user_id })
       .then((user) => {
         if (user) {
-          user.datas.forEach((element) => {
-            list_poll.push(element.message.text);
+          let datas = user.datas || [];
+          if (typeof req.body !== "undefined") {
+            datas = [...datas, req.body];
+            user.datas = datas;
+          }
+          return user.save().then(() => console.log("Add successfully."));
+        } else {
+          const newUser = new User({ user_id });
+          newUser.datas = [req.body];
+          newUser.save((err) => {
+            if (err) console.log(err);
+            else console.log("Add new user successfully.");
           });
         }
       })
-      .catch((err) => console.log(err.message));
-    var ques = "";
-    var options = [];
-    var si = 0,
-      di = 0;
-    for (var index in list_poll) {
-      if (list_poll[index].match("^/poll.*$")) {
-        si = parseInt(index);
-      }
-      if (list_poll[index].match("^/option.*$")) {
-        di = parseInt(index);
-        console.log(di, index);
-      }
-    }
-    for (var i = si; i <= di; i++) {
-      if (list_poll[i].match("^/ques.*$")) {
-        ques = list_poll[i].slice(6);
-      }
-      if (list_poll[i].match("^/option.*$")) {
-        options.push(list_poll[i].slice(8));
-      }
-    }
-    if (options.length >= 2) {
+      .catch((err) => console.log(err));
+    let reply;
+    const url = telegram_url + "/sendMessage";
+    var list_poll = [];
+    if (text.match("^/done.*$")) {
       await User.findOne({ user_id })
         .then((user) => {
           if (user) {
-            user.datas = [];
+            user.datas.forEach((element) => {
+              list_poll.push(element.message.text);
+            });
           }
-          return user.save().then(() => console.log("Delete successfully."));
         })
         .catch((err) => console.log(err.message));
-      reply = "Create poll successfully.";
-      await sendPoll(telegram_url, chat_id, ques, options);
+      var ques = "";
+      var options = [];
+      var si = 0,
+        di = 0;
+      for (var index in list_poll) {
+        if (list_poll[index].match("^/poll.*$")) {
+          si = parseInt(index);
+        }
+        if (list_poll[index].match("^/option.*$")) {
+          di = parseInt(index);
+          console.log(di, index);
+        }
+      }
+      for (var i = si; i <= di; i++) {
+        if (list_poll[i].match("^/ques.*$")) {
+          ques = list_poll[i].slice(6);
+        }
+        if (list_poll[i].match("^/option.*$")) {
+          options.push(list_poll[i].slice(8));
+        }
+      }
+      if (options.length >= 2) {
+        await User.findOne({ user_id })
+          .then((user) => {
+            if (user) {
+              user.datas = [];
+            }
+            return user.save().then(() => console.log("Delete successfully."));
+          })
+          .catch((err) => console.log(err.message));
+        reply = "Create poll successfully.";
+        await sendPoll(telegram_url, chat_id, ques, options);
+      } else {
+        reply =
+          "Add option with /option ... or create poll with /done.\n Your options need at least 2.";
+      }
     } else {
-      reply =
-        "Add option with /option ... or create poll with /done.\n Your options need at least 2.";
+      reply = checkMessage(message);
     }
-  } else {
-    reply = checkMessage(message);
+    sendMessage(url, chat_id, reply);
+    // sendMessage(url, req.body.message.chat.id, req.body);
+    res.send(req.body);
+  } catch (e) {
+    console.log(e);
   }
-  sendMessage(url, chat_id, reply);
-  // sendMessage(url, req.body.message.chat.id, req.body);
-  res.send(req.body);
 };
 function sendPoll(url, user_id, question, options) {
   axios
@@ -116,7 +120,7 @@ function sendMessage(url, user_id, reply) {
     });
 }
 function checkMessage(messenge) {
-  let { text } = messenge;
+  const { text } = messenge;
   let reply;
   if (text.match("^/lichhoc1.*$")) {
     reply = "replichhoc";
@@ -136,14 +140,14 @@ function checkMessage(messenge) {
     } : ${
       date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds()
     }`;
-  } else if (text.match("^/poll.*$")) {
+  } else if (text?.match("^/poll.*$")) {
     reply = "Enter your question.\nStart with /ques ....";
-  } else if (text.match("^/ques.*$")) {
+  } else if (text?.match("^/ques.*$")) {
     reply = "Enter your options.\nStart with /option ....";
-  } else if (text.match("^/option.*$")) {
+  } else if (text?.match("^/option.*$")) {
     reply = "Add option with /option ... or create poll with /done.";
-  } else if (text.match("^/id$")) {
-    reply = messenge.chat.id;
+  } else if (text?.match("^/id$")) {
+    reply = messenge?.chat?.id ?? "không tìm thấy id";
   } else {
     reply = "gọi gì???";
   }
