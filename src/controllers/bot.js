@@ -117,7 +117,7 @@ function sendMessage(url, user_id, reply) {
 }
 function checkMessage(messenge) {
   const { text } = messenge;
-  let reply;
+  let reply = "no";
   if (text.match("^/lichhoc1.*$")) {
     reply = "replichhoc";
   } else if (text.match("^/date.*$")) {
