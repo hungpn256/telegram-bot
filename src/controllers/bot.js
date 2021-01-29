@@ -11,7 +11,10 @@ module.exports.getUpdates = (req, res) => {
 };
 
 module.exports.autoRepMessage = (req, res) => {
-  const body = req.body;
+  const { body } = req;
+  axios.get(
+    `api.telegram.org/bot1568603621:AAHnbJnELeLK3Hdep_qZo2BL5mPacQjz3bw/getUpdates?offset=${body.update_id}`
+  );
   const { message } = req.body;
   const { text } = message;
   const user_id = message.from.id;
