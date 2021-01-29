@@ -46,7 +46,7 @@ module.exports.autoRepMessage = (req, res) => {
   } else if (text.match("^/option.*$")) {
     reply = "Add option with /option ... or create poll with /done.";
     sendMessage(url, chat_id, reply);
-  } else if (text.match("^/id$")) {
+  } else if (text.match("^/id.*$")) {
     reply = messenge.chat.id;
     sendMessage(url, chat_id, reply);
   } else if (text.match("^/covid.*$")) {
