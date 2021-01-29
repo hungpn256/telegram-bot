@@ -1,9 +1,9 @@
 const telegram_url = require("../config/urls").telegram_url;
 const axios = require("axios");
 const User = require("../models/users");
-
+const moment = require("moment");
+const url = telegram_url + "/sendMessage";
 module.exports.getUpdates = (req, res) => {
-  const url = telegram_url + "/getUpdates";
   axios.get(url).then((response) => {
     const data = response.data.result;
     res.send(data);
@@ -16,6 +16,52 @@ module.exports.autoRepMessage = (req, res) => {
   const { text } = message;
   const user_id = message.from.id;
   const chat_id = message.chat.id;
+  let reply = "";
+  if (text.match("^/lichhoc1.*$")) {
+    reply = "replichhoc";
+    sendMessage(url, user_id, reply);
+  } else if (text.match("^/date.*$")) {
+    const date = new Date();
+    reply = `Thứ ${date.getDay() + 1}, ${
+      date.getDate() < 10 ? "0" + date.getDate() : date.getDate()
+    } - ${
+      date.getMonth() + 1 < 10
+        ? "0" + (date.getMonth() + 1)
+        : date.getMonth() + 1
+    } - ${date.getFullYear()}`;
+  } else if (text.match("^/time.*$")) {
+    const date = new Date();
+    reply = ` ${date.getHours()} : ${
+      date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+    } : ${
+      date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds()
+    }`;
+    sendMessage(url, user_id, reply);
+  } else if (text.match("^/poll.*$")) {
+    reply = "Enter your question.\nStart with /ques ....";
+    sendMessage(url, user_id, reply);
+  } else if (text.match("^/ques.*$")) {
+    reply = "Enter your options.\nStart with /option ....";
+    sendMessage(url, user_id, reply);
+  } else if (text.match("^/option.*$")) {
+    reply = "Add option with /option ... or create poll with /done.";
+    sendMessage(url, user_id, reply);
+  } else if (text.match("^/id$")) {
+    reply = messenge.chat.id;
+    sendMessage(url, user_id, reply);
+  } else if (text.match("^/covid.*$")) {
+    axios
+      .get(`https://api.covid19api.com/summary`)
+      .then((res) => {
+        let rep = res.data.Countries.find((val) => val.CountryCode === "VN");
+        reply = covid(rep);
+        sendMessage(url, user_id, reply);
+      })
+      .catch((e) => console.log(e));
+  } else {
+    reply = "gọi gì???";
+    sendMessage(url, user_id, reply);
+  }
   // User.findOne({ user_id })
   //   .then((user) => {
   //     if (user) {
@@ -36,7 +82,6 @@ module.exports.autoRepMessage = (req, res) => {
   //   })
   //   .catch((err) => console.log(err));
   // let reply;
-  const url = telegram_url + "/sendMessage";
   // var list_poll = [];
   // if (text.match("^/done.*$")) {
   //   await User.findOne({ user_id })
@@ -87,7 +132,6 @@ module.exports.autoRepMessage = (req, res) => {
   // } else {
   //   reply = checkMessage(message);
   // }
-  checkMessage(message);
   res.send(req.body);
 };
 function sendPoll(url, user_id, question, options) {
@@ -114,40 +158,16 @@ function sendMessage(url, user_id, reply) {
       console.log(error);
     });
 }
-function checkMessage(messenge) {
-  const { text } = messenge;
-  let reply = "";
-  if (text.match("^/lichhoc1.*$")) {
-    reply = "replichhoc";
-  } else if (text.match("^/date.*$")) {
-    const date = new Date();
-    reply = `Thứ ${date.getDay() + 1}, ${
-      date.getDate() < 10 ? "0" + date.getDate() : date.getDate()
-    } - ${
-      date.getMonth() + 1 < 10
-        ? "0" + (date.getMonth() + 1)
-        : date.getMonth() + 1
-    } - ${date.getFullYear()}`;
-  } else if (text.match("^/time.*$")) {
-    const date = new Date();
-    reply = ` ${date.getHours()} : ${
-      date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
-    } : ${
-      date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds()
-    }`;
-  } else if (text.match("^/poll.*$")) {
-    reply = "Enter your question.\nStart with /ques ....";
-  } else if (text.match("^/ques.*$")) {
-    reply = "Enter your options.\nStart with /option ....";
-  } else if (text.match("^/option.*$")) {
-    reply = "Add option with /option ... or create poll with /done.";
-  } else if (text.match("^/id$")) {
-    reply = messenge.chat.id;
-  } else {
-    reply = "gọi gì???";
-  }
-  return reply;
-}
-async function getCovid() {
-  return await axios.get(`https://api.covid19api.com/summary`);
-}
+covid = (val) => {
+  return `Thông tin về đại dịch covid ở Việt Nam:
+  Tổng số ca nhiễm 🧐🧐: ${val.TotalConfirmed}
+  Đã chữa lành 😇😇😇: ${val.TotalRecovered} 
+  Tổng số người chết 😢: ${val.TotalDeaths}
+
+  Ngày: ${moment(val.Date).format("DD/MM/YYYY")}
+
+  Số ca mắc mới: ${val.NewConfirmed}
+  Số người chết: ${val.NewDeaths}
+  Đã chữa lành thêm: ${val.NewDeaths}
+  `;
+};
