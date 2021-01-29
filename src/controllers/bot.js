@@ -87,8 +87,7 @@ module.exports.autoRepMessage = (req, res) => {
   // } else {
   //   reply = checkMessage(message);
   // }
-  reply = checkMessage(message);
-  sendMessage(url, chat_id, reply);
+  checkMessage(message);
   res.send(req.body);
 };
 function sendPoll(url, user_id, question, options) {
@@ -117,7 +116,7 @@ function sendMessage(url, user_id, reply) {
 }
 function checkMessage(messenge) {
   const { text } = messenge;
-  let reply = "no";
+  let reply = "";
   if (text.match("^/lichhoc1.*$")) {
     reply = "replichhoc";
   } else if (text.match("^/date.*$")) {
@@ -148,4 +147,7 @@ function checkMessage(messenge) {
     reply = "gọi gì???";
   }
   return reply;
+}
+async function getCovid() {
+  return await axios.get(`https://api.covid19api.com/summary`);
 }
