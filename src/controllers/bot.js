@@ -19,7 +19,7 @@ module.exports.autoRepMessage = (req, res) => {
   let reply = "";
   if (text.match("^/lichhoc1.*$")) {
     reply = "replichhoc";
-    sendMessage(url, user_id, reply);
+    sendMessage(url, chat_id, reply);
   } else if (text.match("^/date.*$")) {
     const date = new Date();
     reply = `Thứ ${date.getDay() + 1}, ${
@@ -36,31 +36,31 @@ module.exports.autoRepMessage = (req, res) => {
     } : ${
       date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds()
     }`;
-    sendMessage(url, user_id, reply);
+    sendMessage(url, chat_id, reply);
   } else if (text.match("^/poll.*$")) {
     reply = "Enter your question.\nStart with /ques ....";
-    sendMessage(url, user_id, reply);
+    sendMessage(url, chat_id, reply);
   } else if (text.match("^/ques.*$")) {
     reply = "Enter your options.\nStart with /option ....";
-    sendMessage(url, user_id, reply);
+    sendMessage(url, chat_id, reply);
   } else if (text.match("^/option.*$")) {
     reply = "Add option with /option ... or create poll with /done.";
-    sendMessage(url, user_id, reply);
+    sendMessage(url, chat_id, reply);
   } else if (text.match("^/id$")) {
     reply = messenge.chat.id;
-    sendMessage(url, user_id, reply);
+    sendMessage(url, chat_id, reply);
   } else if (text.match("^/covid.*$")) {
     axios
       .get(`https://api.covid19api.com/summary`)
       .then((res) => {
         let rep = res.data.Countries.find((val) => val.CountryCode === "VN");
         reply = covid(rep);
-        sendMessage(url, user_id, reply);
+        sendMessage(url, chat_id, reply);
       })
       .catch((e) => console.log(e));
   } else {
     reply = "gọi gì???";
-    sendMessage(url, user_id, reply);
+    sendMessage(url, chat_id, reply);
   }
   // User.findOne({ user_id })
   //   .then((user) => {
