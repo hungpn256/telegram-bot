@@ -20,7 +20,7 @@ module.exports.autoRepMessage = (req, res) => {
   const user_id = message.from.id;
   const chat_id = message.chat.id;
   let reply = "";
-  if (text.match("^/lichhoc1.*$")) {
+  if (text.match("^/lichhoc.*$")) {
     reply = "replichhoc";
     sendMessage(url, chat_id, reply);
   } else if (text.match("^/date.*$")) {
