@@ -47,7 +47,7 @@ module.exports.autoRepMessage = (req, res) => {
     reply = "Add option with /option ... or create poll with /done.";
     sendMessage(url, chat_id, reply);
   } else if (text.match("^/id.*$")) {
-    reply = messenge.chat.id;
+    reply = message.chat.id;
     sendMessage(url, chat_id, reply);
   } else if (text.match("^/covid.*$")) {
     axios
