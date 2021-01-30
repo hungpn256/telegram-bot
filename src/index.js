@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const bot = require('./routers/bot');
 const PORT = process.env.PORT || 3000;
 var bodyParser = require("body-parser");
-const CONNECTION_URL = "mongodb+srv://admin:tD932cU4JIBUoULV@cluster0.adxn5.mongodb.net/users?retryWrites=true&w=majority"
+const CONNECTION_URL = "mongodb+srv://admin:tD932cU4JIBUoULV@cluster0.adxn5.mongodb.net/tele-bot?retryWrites=true&w=majority"
 
 require("dotenv").config();
 
