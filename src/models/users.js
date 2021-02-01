@@ -6,7 +6,11 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  datas:[]
+  name: String,
+  subjects: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'subject'
+  }]
 });
 
 module.exports = User = mongoose.model("users", UserSchema);
